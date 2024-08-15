@@ -1,0 +1,7 @@
+   gender area          cause  avg_mortality_rate
+0  Female  USA      Accidents                40.0
+1  Female  USA         Cancer               170.1
+2  Female  USA  Heart Disease               180.2
+3    Male  USA      Accidents                50.0
+4    Male  USA         Cancer               190.3
+5    Male  USA  Heart Disease               200.5
