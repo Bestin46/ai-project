@@ -1,0 +1,55 @@
+pip install pandas sqlite3
+import sqlite3
+import pandas as pd
+
+# Create a connection to a SQLite database (or create the database file if it doesn't exist)
+conn = sqlite3.connect('mortality_data.db')
+
+# Create a cursor object
+cursor = conn.cursor()
+
+# Create the MortalityData table
+cursor.execute('''
+CREATE TABLE IF NOT EXISTS MortalityData (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    gender TEXT,
+    area TEXT,
+    cause TEXT,
+    mortality_rate REAL,
+    year INTEGER
+)
+''')
+
+# Insert sample data into the MortalityData table
+data = [
+    ('Male', 'USA', 'Heart Disease', 200.5, 2023),
+    ('Female', 'USA', 'Heart Disease', 180.2, 2023),
+    ('Male', 'USA', 'Cancer', 190.3, 2023),
+    ('Female', 'USA', 'Cancer', 170.1, 2023),
+    ('Male', 'USA', 'Accidents', 50.0, 2023),
+    ('Female', 'USA', 'Accidents', 40.0, 2023)
+]
+
+cursor.executemany('''
+INSERT INTO MortalityData (gender, area, cause, mortality_rate, year)
+VALUES (?, ?, ?, ?, ?)
+''', data)
+
+# Commit the changes
+conn.commit()
+
+# Query the database to get mortality rates by gender, area, and cause
+query = '''
+SELECT gender, area, cause, AVG(mortality_rate) AS avg_mortality_rate
+FROM MortalityData
+GROUP BY gender, area, cause
+'''
+
+# Read the query results into a DataFrame
+df = pd.read_sql_query(query, conn)
+
+# Close the database connection
+conn.close()
+
+# Display the results
+print(df)
